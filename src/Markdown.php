@@ -33,25 +33,39 @@ class Markdown implements HttpKernelInterface
     {
         $response = $this->app->handle($request, $type, $catch);
 
-        if($this->isMarkdownResponse($response)) {
+        if ($this->needToTransformResponse($response)) {
             $response = $this->transformResponse($response);
         }
 
         return $response;
     }
 
-    private function isMarkdownResponse(Response $response)
+    private function needToTransformResponse(Response $response)
     {
-        return in_array($response->headers->get('Content-Type'), $this->contentTypes);
+        if(!$this->contentTypes) {
+            // No content type means, "transform all".
+            return true;
+        }
+
+        $contentType = $response->headers->get('Content-Type');
+
+        if(false !== stripos($contentType, ';')) {
+            list($contentType, $encoding) = explode(';', $contentType, 2);
+        }
+
+        return in_array(trim($contentType), $this->contentTypes);
     }
 
     private function transformResponse(Response $response)
     {
-        $htmlContent = $this->markdown->transform($response->getContent());
+        $newResponse = new Response(
+            $this->markdown->transform($response->getContent()),
+            $response->getStatusCode(),
+            $response->headers->all()
+        );
 
-        $response->setContent($htmlContent);
-        $response->headers->set('Content-Type', 'text/html');
+        $newResponse->headers->set('Content-Type', 'text/html');
 
-        return $response;
+        return $newResponse;
     }
 }
