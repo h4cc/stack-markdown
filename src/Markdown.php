@@ -58,14 +58,11 @@ class Markdown implements HttpKernelInterface
 
     private function transformResponse(Response $response)
     {
-        $newResponse = new Response(
-            $this->markdown->transform($response->getContent()),
-            $response->getStatusCode(),
-            $response->headers->all()
-        );
+        $newContent = $this->markdown->transform($response->getContent());
+        $response->setContent($newContent);
 
-        $newResponse->headers->set('Content-Type', 'text/html');
+        $response->headers->set('Content-Type', 'text/html');
 
-        return $newResponse;
+        return $response;
     }
 }
