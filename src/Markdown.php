@@ -21,10 +21,10 @@ class Markdown implements HttpKernelInterface
     private $app;
     private $markdown;
 
-    public function __construct(HttpKernelInterface $app, MarkdownInterface $markdown)
+    public function __construct(HttpKernelInterface $app, MarkdownInterface $markdown = null)
     {
         $this->app = $app;
-        $this->markdown = $markdown;
+        $this->markdown = ($markdown) ? $markdown : new \Michelf\Markdown();
     }
 
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
