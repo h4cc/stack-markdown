@@ -20,11 +20,13 @@ class Markdown implements HttpKernelInterface
 {
     private $app;
     private $markdown;
+    private $contentTypes;
 
-    public function __construct(HttpKernelInterface $app, MarkdownInterface $markdown = null)
+    public function __construct(HttpKernelInterface $app, MarkdownInterface $markdown = null, array $contentTypes = array('text/markdown', 'text/x-markdown'))
     {
         $this->app = $app;
         $this->markdown = ($markdown) ? $markdown : new \Michelf\Markdown();
+        $this->contentTypes = $contentTypes;
     }
 
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
@@ -40,9 +42,7 @@ class Markdown implements HttpKernelInterface
 
     private function isMarkdownResponse(Response $response)
     {
-        $contentType = $response->headers->get('Content-Type');
-
-        return in_array($contentType, array('text/markdown', 'text/x-markdown'));
+        return in_array($response->headers->get('Content-Type'), $this->contentTypes);
     }
 
     private function transformResponse(Response $response)
