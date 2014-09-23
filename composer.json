@@ -1,0 +1,24 @@
+{
+    "name": "h4cc/stack-markdown",
+    "description": "A StackPHP Middleware for parsing markdown to html.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Julius Beckmann",
+            "email": "github@h4cc.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "michelf/php-markdown": "~1.4",
+        "symfony/http-kernel": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "h4cc\\StackMarkdown\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": { "dev-master": "1.0-dev" }
+    }
+}
